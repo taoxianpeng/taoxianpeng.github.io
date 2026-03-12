@@ -1,5 +1,6 @@
 ---
 title: tinyrenderer学习
+toc: true
 ---
 
 > tinyrenderer网站：https://haqr.eu/tinyrenderer/

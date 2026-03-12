@@ -104,3 +104,19 @@ deploy:
   type: 'git'
   repository: 'https://github.com/taoxianpeng/taoxianpeng.github.io.git'
   branch: 'main'
+
+plugins:
+  - hexo-toc
+
+hexo-toc:
+  enable: true
+  max_depth: 4
+  min_depth: 1
+  list_number: false
+  class: 'toc'
+
+# 添加部署后钩子
+after_deploy: |
+  git add .
+  git commit -m "update: $(date)"
+  git push origin main
