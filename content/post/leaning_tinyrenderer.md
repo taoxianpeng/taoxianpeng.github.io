@@ -4,6 +4,7 @@ date: 2026-06-06T12:05:47+08:00
 draft: false
 summary: "tinyrenderer学习笔记"
 pin: true
+tags: ["图形学", "渲染"]
 ---
 
 # tinyrenderer-rs

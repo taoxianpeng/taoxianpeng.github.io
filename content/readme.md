@@ -2,4 +2,15 @@
 title: 关于我
 ---
 
-`Hello World!`
+## Skills
+
+- C/C++
+- Python
+- Rust
+- Zig
+
+---
+
+- OpenGL/Vulkan
+- Kanzi, Godot
+- Computer Graphics Base
