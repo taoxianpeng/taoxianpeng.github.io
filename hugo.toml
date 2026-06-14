@@ -1,0 +1,41 @@
+baseURL = 'https://taoxianpeng.github.io/'
+languageCode = 'zh-cn'
+title = "Txp's Blog"
+theme = "github-style"
+
+[params]
+  author = "taoxianpeng"
+  description = "个人博客"
+  github = "taoxianpeng"
+  rss = true
+  enableSearch = true
+  favicon = "/images/avatar.png"
+  avatar = "/images/avatar.png"
+  headerIcon = "/images/github-mark-white.png"
+  custom_css = ["/css/custom.css"]
+
+[outputs]
+  home = ["html", "json"]
+
+[outputFormats.json]
+  mediaType = "application/json"
+  baseName = "index"
+  isPlainText = false
+
+lastmod = true
+[frontmatter]
+  lastmod = ["lastmod", ":fileModTime", ":default"]
+
+enableGitalk = true
+[params.gitalk]
+  clientID = "Your client ID"
+  clientSecret = "Your client secret"
+  repo = "repo"
+  owner = "Your Github username"
+  admin = "Your Github username"
+  id = "location.pathname"
+  labels = "gitalk"
+  perPage = 30
+  pagerDirection = "last"
+  createIssueManually = true
+  distractionFreeMode = false

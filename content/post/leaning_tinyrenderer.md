@@ -1,6 +1,9 @@
 ---
-title: tinyrenderer学习
-toc: true
+title: "tinyrenderer-rs"
+date: 2026-06-06T12:05:47+08:00 
+draft: false
+summary: "tinyrenderer学习笔记"
+pin: true
 ---
 
 > tinyrenderer网站：https://haqr.eu/tinyrenderer/
