@@ -6,9 +6,13 @@ summary: "tinyrenderer学习笔记"
 pin: true
 ---
 
+# tinyrenderer-rs
+
 > tinyrenderer网站：https://haqr.eu/tinyrenderer/
 
 ## Bresenham直线绘制方法
+
+
 
 ## 三角形光栅化
 
