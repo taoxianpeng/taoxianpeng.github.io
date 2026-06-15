@@ -32,23 +32,23 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Build
+      - name: Test hugo
         continue-on-error: true
         run: |
-          echo "::notice::PWD: $(pwd)"
-          echo "::notice::Content files: $(find content -type f)"
-          echo "::notice::Theme layouts count: $(find themes/hextra/layouts -name '*.html' | wc -l)"
-          
-          hugo --config hugo_minimal.toml --verbose > /tmp/hugo_build.log 2>&1
-          RC=$?
-          echo "::notice::Exit code: $RC"
-          
-          # Output all Hugo output as annotations (using awk to prefix)
-          awk '{print "::notice::" $0}' /tmp/hugo_build.log | head -50
-          
-          echo "::notice::LOG SIZE: $(wc -c < /tmp/hugo_build.log) bytes"
-          echo "::notice::Public files: $(find public -type f 2>/dev/null | wc -l)"
-          echo "::notice::Public index: $(find public -name 'index.html' 2>/dev/null)"
+          # Basic tests first
+          echo "notice: version=$(hugo version 2>&1)"
+          echo "notice: which=$(which hugo 2>&1)"
+          echo "notice: help test"
+          hugo help 2>&1 | head -3
+          echo "notice: site info"
+          hugo --config hugo_minimal.toml --verbose config 2>&1
+          echo "notice: config exit=$?"
+
+      - name: Build
+        run: |
+          cp hugo_minimal.toml hugo.toml
+          rm -f public/
+          hugo 2>&1
 
       - name: Upload artifact
         if: success()
