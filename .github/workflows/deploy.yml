@@ -32,16 +32,46 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Build
+      - name: Test minimal build
         continue-on-error: true
         run: |
-          hugo version
+          set -x
+          cd /tmp
+          rm -rf test_site
+          mkdir test_site
+          cd test_site
+          hugo new site . --force 2>&1
+          echo "--- Now try with hextra ---"
+          cp -r $GITHUB_WORKSPACE/themes/hextra themes/hextra
+          echo 'theme = "hextra"' > hugo.toml
+          echo 'baseURL = "https://example.com/"' >> hugo.toml
+          echo 'title = "Test"' >> hugo.toml
+          echo '---' > content/_index.md
+          echo 'title: "Home"' >> content/_index.md
+          echo '---' >> content/_index.md
+          echo 'Hello World' >> content/_index.md
+          ls -la themes/
+          ls -la themes/hextra/
           hugo --verbose 2>&1
-          echo "--- Exit: $? ---"
-          echo "Public files:"
-          find public/ -type f | head -20
-          echo "--- Total files in public ---"
-          find public/ -type f | wc -l
+          echo "Exit: $?"
+          ls public/ 2>/dev/null
+
+      - name: Build actual site
+        continue-on-error: true
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "=== Current config ==="
+          cat hugo.toml
+          echo "=== Content ==="
+          ls -la content/
+          find content/ -type f
+          echo "=== Building ==="
+          hugo --verbose 2>&1
+          echo "EXIT: $?"
+          echo "=== Public files ==="
+          find public/ -type f 2>/dev/null | head -30
+          echo "=== Count ==="
+          find public/ -type f 2>/dev/null | wc -l
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
