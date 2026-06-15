@@ -33,13 +33,15 @@ jobs:
           extended: true
 
       - name: Build
-        continue-on-error: true
         run: |
-          cp hugo_minimal.toml hugo.toml
-          hugo --verbose > /tmp/hugo_log.txt 2>&1
-          RC=$?
-          cat /tmp/hugo_log.txt
-          echo "=== EXIT CODE: $RC ==="
+          echo "=== files ==="
+          ls -la
+          echo "=== content ==="
+          find content -type f
+          echo "=== theme check ==="
+          ls themes/hextra/layouts/baseof.html 2>/dev/null && echo "baseof OK" || echo "baseof MISSING"
+          echo "=== build ==="
+          hugo --config hugo_minimal.toml --verbose 2>&1
 
       - name: Upload artifact
         if: success()
