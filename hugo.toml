@@ -1,41 +1,92 @@
 baseURL = 'https://taoxianpeng.github.io/'
-languageCode = 'zh-cn'
 title = "Txp's Blog"
-theme = "github-style"
-
-[params]
-  author = "taoxianpeng"
-  description = "个人博客"
-  github = "taoxianpeng"
-  rss = true
-  enableSearch = true
-  favicon = "/images/avatar.png"
-  avatar = "/images/avatar.png"
-  headerIcon = "/images/github-mark-white.png"
-  custom_css = ["/css/custom.css"]
+theme = "hextra"
+defaultContentLanguage = "zh-cn"
+enableRobotsTXT = true
+enableGitInfo = true
+hasCJKLanguage = true
+enableInlineShortcodes = true
 
 [outputs]
-  home = ["html", "json"]
+  home = ["html"]
+  page = ["html"]
+  section = ["html", "rss"]
 
-[outputFormats.json]
-  mediaType = "application/json"
-  baseName = "index"
-  isPlainText = false
+[markup]
+  [markup.highlight]
+    noClasses = false
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.extensions.passthrough]
+      enable = true
+      [markup.goldmark.extensions.passthrough.delimiters]
+        block = [['\[', '\]'], ['$$', '$$']]
+        inline = [['\(', '\)']]
 
-lastmod = true
-[frontmatter]
-  lastmod = ["lastmod", ":fileModTime", ":default"]
+[[menu.main]]
+  identifier = "blog"
+  name = "博客"
+  pageRef = "/blog"
+  weight = 1
 
-enableGitalk = true
-[params.gitalk]
-  clientID = "Your client ID"
-  clientSecret = "Your client secret"
-  repo = "repo"
-  owner = "Your Github username"
-  admin = "Your Github username"
-  id = "location.pathname"
-  labels = "gitalk"
-  perPage = 30
-  pagerDirection = "last"
-  createIssueManually = true
-  distractionFreeMode = false
+[[menu.main]]
+  identifier = "about"
+  name = "关于"
+  pageRef = "/about"
+  weight = 2
+
+[[menu.main]]
+  name = "Search"
+  weight = 3
+  [menu.main.params]
+    type = "search"
+
+[[menu.main]]
+  name = "GitHub"
+  weight = 4
+  url = "https://github.com/taoxianpeng"
+  [menu.main.params]
+    icon = "github"
+
+[params]
+  description = "Txp's Blog - 个人博客"
+  displayUpdatedDate = true
+  dateFormat = "2006-01-02"
+  imageZoom = true
+
+  [params.navbar]
+    displayTitle = true
+    displayLogo = false
+    width = "wide"
+
+  [params.theme]
+    default = "system"
+    displayToggle = true
+
+  [params.footer]
+    enable = true
+    displayCopyright = true
+    displayPoweredBy = true
+    width = "normal"
+
+  [params.search]
+    enable = true
+    type = "flexsearch"
+    [params.search.flexsearch]
+      index = "content"
+
+  [params.blog]
+    [params.blog.list]
+      displayTags = true
+      sortBy = "date"
+      sortOrder = "desc"
+      pagerSize = 20
+
+  [params.toc]
+    displayTags = true
+
+  [params.highlight]
+    [params.highlight.copy]
+      enable = true
+      display = "hover"
