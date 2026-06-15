@@ -32,33 +32,20 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Check files
-        run: |
-          echo "::notice::PWD: $(pwd)"
-          echo "::notice::Files at root:"
-          ls -la | head -20 | while read line; do echo "::notice::$line"; done
-          echo "::notice::hugo.toml exists: $(test -f hugo.toml && echo YES || echo NO)"
-          echo "::notice::hugo_minimal.toml exists: $(test -f hugo_minimal.toml && echo YES || echo NO)"
-          echo "::notice::themes exists: $(test -d themes && echo YES || echo NO)"
-          echo "::notice::themes/hextra exists: $(test -d themes/hextra && echo YES || echo NO)"
-          echo "::notice::content exists: $(test -d content && echo YES || echo NO)"
-
       - name: Build
         run: |
-          ls -la hugo*.toml
-          cat hugo_minimal.toml
+          echo "::notice::pwd=$(pwd)"
+          echo "::notice::dirs: content=$(ls content/ 2>/dev/null|wc -l), themes=$(ls themes/ 2>/dev/null|wc -l)"
+          echo "::notice::hugo_minimal exists=$(test -f hugo_minimal.toml && echo yes || echo no)"
+          
+          # Try building from workspace directly with minimal config
+          cd /home/runner/work/taoxianpeng.github.io/taoxianpeng.github.io
           cp hugo_minimal.toml hugo.toml
-          echo "::notice::Will use: hugo.toml"
-          cat hugo.toml
-          echo "::notice::Building..."
+          echo "::notice::Running hugo from $(pwd)"
           set +e
-          LS_OUTPUT=$(ls -la)
-          echo "::notice::$LS_OUTPUT"
-          hugo --verbose 2>&1 > /tmp/hugo_out.txt
+          hugo --verbose 2>&1
           RC=$?
-          echo "::notice::Exit: $RC"
-          tail -20 /tmp/hugo_out.txt | while read line; do echo "::notice:::$line"; done
-          exit $RC
+          echo "::notice::Exit code=$RC"
 
       - name: Upload artifact
         if: success()
