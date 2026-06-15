@@ -26,34 +26,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Debug
-        run: |
-          echo "=== files ==="
-          ls -la
-          ls -la themes/ 2>/dev/null || echo "no themes dir"
-          ls -la themes/hextra/ 2>/dev/null || echo "no hextra dir"
-          ls -la themes/hextra/layouts/ 2>/dev/null | head -3
-          cat hugo.toml | head -3
-
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.146.0'
+          hugo-version: 'latest'
           extended: true
+
+      - name: Debug
+        run: |
+          echo "HUGO VERSION:"
+          hugo version
+          echo "THEMES:"
+          ls -la themes/
+          echo "THEME EXISTS:"
+          test -d themes/hextra && echo "YES" || echo "NO"
+          test -f themes/hextra/layouts/baseof.html && echo "BASEOF OK" || echo "BASEOF MISSING"
+          echo "FILES:"
+          ls content/
 
       - name: Build
         run: |
-          hugo version
-          hugo 2>&1 | tee /tmp/hugo_out.txt
-          echo "EXIT: $?"
-          ls -la public/ 2>/dev/null || echo "NO PUBLIC DIR"
-
-      - name: Show log
-        if: always()
-        run: |
-          cat /tmp/hugo_out.txt 2>/dev/null || echo "no log file"
+          hugo --minify 2>&1 | tee /tmp/hugo_out.txt
+          echo "---"
+          echo "Exit code: $?"
+          echo "Public dir:"
           ls -la public/ 2>/dev/null
           find public/ -name "index.html" 2>/dev/null | head -5
+
+      - name: Show error
+        if: failure()
+        run: |
+          echo "=== BUILD LOG ==="
+          cat /tmp/hugo_out.txt 2>/dev/null || echo "(no file)"
+          echo "=== HUGO CONFIG ==="
+          hugo config 2>&1 | head -30 || true
+          exit 1
 
       - name: Upload artifact
         if: success()
@@ -62,6 +69,7 @@ jobs:
           path: ./public
 
   deploy:
+    if: success()
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
