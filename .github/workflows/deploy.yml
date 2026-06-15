@@ -25,17 +25,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: false
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.146.0'
           extended: true
 
       - name: Build
-        run: hugo --minify
+        run: |
+          hugo version
+          hugo --minify 2>&1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
