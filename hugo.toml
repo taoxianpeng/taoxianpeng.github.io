@@ -1,7 +1,6 @@
 baseURL = 'https://taoxianpeng.github.io/'
 title = "Txp's Blog"
 theme = "hextra"
-defaultContentLanguage = "zh-cn"
 enableRobotsTXT = true
 enableGitInfo = true
 hasCJKLanguage = true
