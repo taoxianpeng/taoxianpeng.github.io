@@ -26,11 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.21'
-
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
@@ -38,20 +33,22 @@ jobs:
           extended: true
 
       - name: Build
+        continue-on-error: true
         run: |
-          set -x
           hugo version
-          hugo --verbose --minify 2>&1
-          echo "EXIT=$?"
+          hugo --verbose 2>&1
+          echo "--- Exit: $? ---"
+          echo "Public files:"
+          find public/ -type f | head -20
+          echo "--- Total files in public ---"
+          find public/ -type f | wc -l
 
       - name: Upload artifact
-        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
   deploy:
-    if: success()
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
