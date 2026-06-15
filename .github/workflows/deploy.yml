@@ -43,11 +43,10 @@ jobs:
           RC=$?
           echo "::notice::Exit code: $RC"
           
-          # Output first 30 lines as annotations
-          head -30 /tmp/hugo_build.log | while IFS= read -r line; do
-            echo "::notice::$line"
-          done
+          # Output all Hugo output as annotations (using awk to prefix)
+          awk '{print "::notice::" $0}' /tmp/hugo_build.log | head -50
           
+          echo "::notice::LOG SIZE: $(wc -c < /tmp/hugo_build.log) bytes"
           echo "::notice::Public files: $(find public -type f 2>/dev/null | wc -l)"
           echo "::notice::Public index: $(find public -name 'index.html' 2>/dev/null)"
 
