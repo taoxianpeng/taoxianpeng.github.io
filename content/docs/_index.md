@@ -2,6 +2,8 @@
 date: '2026-06-15T21:00:48+08:00'
 draft: false
 title: 'Docs'
+sidebar:
+  open: true
 ---
 
 This is a demo of the theme's documentation layout.
