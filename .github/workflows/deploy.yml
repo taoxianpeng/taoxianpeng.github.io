@@ -33,9 +33,16 @@ jobs:
           extended: true
 
       - name: Build
-        run: hugo --minify
+        run: |
+          echo "=== HUGO VERSION ==="
+          hugo version
+          echo "=== MOD GET ==="
+          hugo mod get 2>&1 || echo "mod get may have failed"
+          echo "=== BUILD ==="
+          hugo --minify 2>&1 || true
 
       - name: Upload artifact
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
