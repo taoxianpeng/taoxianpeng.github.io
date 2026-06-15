@@ -34,8 +34,15 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
+      - name: Debug
+        run: |
+          hugo version
+          ls -la themes/
+          ls -la themes/hextra/ 2>/dev/null || echo "hextra theme missing!"
+          cat .gitmodules
+
       - name: Build
-        run: hugo --minify
+        run: hugo --minify 2>&1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
