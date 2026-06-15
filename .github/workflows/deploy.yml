@@ -32,35 +32,24 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Debug
+      - name: Build and save log
         run: |
-          echo "HUGO VERSION:"
+          hugo --minify 2>&1 > /tmp/hugo_output.txt
+          RC=$?
+          echo "Hugo exit code: $RC"
+          echo "=== HUGO VERSION ==="
           hugo version
-          echo "THEMES:"
-          ls -la themes/
-          echo "THEME EXISTS:"
-          test -d themes/hextra && echo "YES" || echo "NO"
-          test -f themes/hextra/layouts/baseof.html && echo "BASEOF OK" || echo "BASEOF MISSING"
-          echo "FILES:"
-          ls content/
-
-      - name: Build
-        run: |
-          hugo --minify 2>&1 | tee /tmp/hugo_out.txt
-          echo "---"
-          echo "Exit code: $?"
-          echo "Public dir:"
+          echo "=== PUBLIC DIR ==="
           ls -la public/ 2>/dev/null
-          find public/ -name "index.html" 2>/dev/null | head -5
+          find public/ -name "*.html" 2>/dev/null | head -5
+          exit $RC
 
-      - name: Show error
-        if: failure()
-        run: |
-          echo "=== BUILD LOG ==="
-          cat /tmp/hugo_out.txt 2>/dev/null || echo "(no file)"
-          echo "=== HUGO CONFIG ==="
-          hugo config 2>&1 | head -30 || true
-          exit 1
+      - name: Upload hugo log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hugo-log
+          path: /tmp/hugo_output.txt
 
       - name: Upload artifact
         if: success()
