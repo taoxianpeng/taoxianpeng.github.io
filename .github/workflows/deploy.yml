@@ -32,53 +32,39 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Test minimal build
-        continue-on-error: true
+      - name: Info
         run: |
-          set -x
-          cd /tmp
-          rm -rf test_site
-          mkdir test_site
-          cd test_site
-          hugo new site . --force 2>&1
-          echo "--- Now try with hextra ---"
-          cp -r $GITHUB_WORKSPACE/themes/hextra themes/hextra
-          echo 'theme = "hextra"' > hugo.toml
-          echo 'baseURL = "https://example.com/"' >> hugo.toml
-          echo 'title = "Test"' >> hugo.toml
-          echo '---' > content/_index.md
-          echo 'title: "Home"' >> content/_index.md
-          echo '---' >> content/_index.md
-          echo 'Hello World' >> content/_index.md
-          ls -la themes/
-          ls -la themes/hextra/
-          hugo --verbose 2>&1
-          echo "Exit: $?"
-          ls public/ 2>/dev/null
+          echo "::notice::Hugo version: $(hugo version)"
+          echo "::notice::Hugo extended: $(hugo env | grep -i extended)"
 
-      - name: Build actual site
-        continue-on-error: true
+      - name: Build
         run: |
-          cd $GITHUB_WORKSPACE
-          echo "=== Current config ==="
-          cat hugo.toml
-          echo "=== Content ==="
-          ls -la content/
-          find content/ -type f
-          echo "=== Building ==="
-          hugo --verbose 2>&1
-          echo "EXIT: $?"
-          echo "=== Public files ==="
-          find public/ -type f 2>/dev/null | head -30
-          echo "=== Count ==="
-          find public/ -type f 2>/dev/null | wc -l
+          cp hugo_minimal.toml hugo.toml
+          set +e
+          hugo --verbose 2>&1 > /tmp/hugo_output.txt
+          RC=$?
+          echo "::notice::Hugo exit code: $RC"
+          cat /tmp/hugo_output.txt | tail -30
+          # Output errors as notices so they appear in annotations
+          grep -i "error\|ERROR\|panic\|fail" /tmp/hugo_output.txt | head -10 | while read line; do
+            echo "::error::$line"
+          done
+          exit $RC
+
+      - name: Show public dir
+        if: success()
+        run: |
+          echo "::notice::Public files: $(find public/ -type f 2>/dev/null | wc -l)"
+          find public/ -name "index.html" 2>/dev/null
 
       - name: Upload artifact
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
   deploy:
+    if: success()
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
