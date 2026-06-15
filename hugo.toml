@@ -1,9 +1,6 @@
 baseURL = 'https://taoxianpeng.github.io/'
 title = "Txp's Blog"
-
-[module]
-  [[module.imports]]
-    path = "github.com/imfing/hextra"
+theme = "hextra"
 defaultContentLanguage = "zh-cn"
 enableRobotsTXT = true
 enableGitInfo = true

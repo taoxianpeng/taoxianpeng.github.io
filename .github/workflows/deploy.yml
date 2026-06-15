@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
@@ -33,14 +35,7 @@ jobs:
           extended: true
 
       - name: Build
-        run: |
-          hugo version
-          hugo mod clean
-          hugo mod get github.com/imfing/hextra@latest
-          hugo --minify 2>&1
-          echo "=== public dir ==="
-          ls -la public/ 2>/dev/null || echo "EMPTY!"
-          ls -la public/*.html 2>/dev/null || echo "NO HTML FILES!"
+        run: hugo --minify
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
