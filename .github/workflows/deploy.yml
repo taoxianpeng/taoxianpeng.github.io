@@ -33,15 +33,23 @@ jobs:
           extended: true
 
       - name: Build
+        continue-on-error: true
         run: |
-          echo "=== files ==="
-          ls -la
-          echo "=== content ==="
-          find content -type f
-          echo "=== theme check ==="
-          ls themes/hextra/layouts/baseof.html 2>/dev/null && echo "baseof OK" || echo "baseof MISSING"
-          echo "=== build ==="
-          hugo --config hugo_minimal.toml --verbose 2>&1
+          echo "::notice::PWD: $(pwd)"
+          echo "::notice::Content files: $(find content -type f)"
+          echo "::notice::Theme layouts count: $(find themes/hextra/layouts -name '*.html' | wc -l)"
+          
+          hugo --config hugo_minimal.toml --verbose 2>&1 > /tmp/hugo_build.log
+          RC=$?
+          echo "::notice::Exit code: $RC"
+          
+          # Output first 30 lines as annotations
+          head -30 /tmp/hugo_build.log | while IFS= read -r line; do
+            echo "::notice::$line"
+          done
+          
+          echo "::notice::Public files: $(find public -type f 2>/dev/null | wc -l)"
+          echo "::notice::Public index: $(find public -name 'index.html' 2>/dev/null)"
 
       - name: Upload artifact
         if: success()
