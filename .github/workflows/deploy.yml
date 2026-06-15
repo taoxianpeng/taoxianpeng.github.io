@@ -32,30 +32,21 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Info
-        run: |
-          echo "::notice::Hugo version: $(hugo version)"
-          echo "::notice::Hugo extended: $(hugo env | grep -i extended)"
-
       - name: Build
         run: |
           cp hugo_minimal.toml hugo.toml
           set +e
-          hugo --verbose 2>&1 > /tmp/hugo_output.txt
+          hugo --verbose 2>&1 | tee /tmp/hugo_out.txt
           RC=$?
           echo "::notice::Hugo exit code: $RC"
-          cat /tmp/hugo_output.txt | tail -30
-          # Output errors as notices so they appear in annotations
-          grep -i "error\|ERROR\|panic\|fail" /tmp/hugo_output.txt | head -10 | while read line; do
-            echo "::error::$line"
+          echo "::group::Last 30 lines"
+          tail -30 /tmp/hugo_out.txt
+          echo "::endgroup::"
+          # Output ALL lines as notices (limited to first 50)
+          head -50 /tmp/hugo_out.txt | while read line; do
+            echo "::notice::$line"
           done
           exit $RC
-
-      - name: Show public dir
-        if: success()
-        run: |
-          echo "::notice::Public files: $(find public/ -type f 2>/dev/null | wc -l)"
-          find public/ -name "index.html" 2>/dev/null
 
       - name: Upload artifact
         if: success()
