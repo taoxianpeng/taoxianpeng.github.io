@@ -34,7 +34,6 @@ jobs:
 
       - name: Build
         run: |
-          cp hugo_minimal.toml hugo.toml
           hugo 2>&1
 
       - name: Upload artifact
