@@ -33,19 +33,13 @@ jobs:
           extended: true
 
       - name: Build
+        continue-on-error: true
         run: |
-          echo "::notice::pwd=$(pwd)"
-          echo "::notice::dirs: content=$(ls content/ 2>/dev/null|wc -l), themes=$(ls themes/ 2>/dev/null|wc -l)"
-          echo "::notice::hugo_minimal exists=$(test -f hugo_minimal.toml && echo yes || echo no)"
-          
-          # Try building from workspace directly with minimal config
-          cd /home/runner/work/taoxianpeng.github.io/taoxianpeng.github.io
           cp hugo_minimal.toml hugo.toml
-          echo "::notice::Running hugo from $(pwd)"
-          set +e
-          hugo --verbose 2>&1
+          hugo --verbose > /tmp/hugo_log.txt 2>&1
           RC=$?
-          echo "::notice::Exit code=$RC"
+          cat /tmp/hugo_log.txt
+          echo "=== EXIT CODE: $RC ==="
 
       - name: Upload artifact
         if: success()
