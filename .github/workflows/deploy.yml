@@ -32,24 +32,16 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Build and save log
+      - name: Verbose debug build
         run: |
-          hugo --minify 2>&1 > /tmp/hugo_output.txt
-          RC=$?
-          echo "Hugo exit code: $RC"
-          echo "=== HUGO VERSION ==="
+          set -x
+          pwd
+          ls -la
+          which hugo
           hugo version
-          echo "=== PUBLIC DIR ==="
-          ls -la public/ 2>/dev/null
-          find public/ -name "*.html" 2>/dev/null | head -5
-          exit $RC
-
-      - name: Upload hugo log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: hugo-log
-          path: /tmp/hugo_output.txt
+          hugo env
+          hugo --verbose --minify 2>&1
+          echo "DONE"
 
       - name: Upload artifact
         if: success()
