@@ -32,23 +32,30 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Test hugo
+      - name: Tests
         continue-on-error: true
         run: |
-          # Basic tests first
-          echo "::notice::version: $(hugo version 2>&1)"
-          echo "::notice::which: $(which hugo 2>&1)"
-          echo "::notice::help test"
-          hugo help 2>&1 | head -3
-          echo "::notice::site info:"
-          hugo --config hugo_minimal.toml --verbose config 2>&1
-          echo "::notice::config exit=$?"
-
-      - name: Build
-        run: |
-          cp hugo_minimal.toml hugo.toml
-          rm -f public/
-          hugo 2>&1
+          set +e
+          echo "::notice::1. version: $(hugo version)"
+          echo "::notice::2. pwd: $(pwd)"
+          ls -la
+          echo "::notice::3. hugo help"
+          hugo help > /tmp/help_out.txt 2>&1
+          echo "::notice::4. help exit=$?"
+          echo "::notice::5. hugo config"
+          hugo --config hugo_minimal.toml config > /tmp/config_out.txt 2>&1
+          echo "::notice::6. config exit=$?"
+          echo "::notice::7. hugo build test"
+          cd /tmp && rm -rf test_hugo && mkdir test_hugo && cd test_hugo
+          echo 'baseURL = "https://ex.com/"' > hugo.toml
+          echo 'title = "T"' >> hugo.toml
+          mkdir -p content
+          echo '---' > content/_index.md
+          echo 'title: "X"' >> content/_index.md
+          echo '---' >> content/_index.md
+          echo '# Hello' >> content/_index.md
+          hugo > /tmp/hugo_build_test.txt 2>&1
+          echo "::notice::8. simple build exit=$?"
 
       - name: Upload artifact
         if: success()
