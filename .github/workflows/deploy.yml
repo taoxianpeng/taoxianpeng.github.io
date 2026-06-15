@@ -26,22 +26,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
           extended: true
 
-      - name: Verbose debug build
+      - name: Build
         run: |
           set -x
-          pwd
-          ls -la
-          which hugo
           hugo version
-          hugo env
           hugo --verbose --minify 2>&1
-          echo "DONE"
+          echo "EXIT=$?"
 
       - name: Upload artifact
         if: success()
