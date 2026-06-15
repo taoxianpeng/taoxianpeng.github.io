@@ -1,11 +1,17 @@
 ---
-title: "Txp's Blog"
-description: "个人技术博客"
+title: My Blog
+toc: false
 ---
 
-# 欢迎来到 Txp's Blog
+This is the landing page.
 
-个人技术博客，记录学习笔记和项目经验。
+## Explore
 
-👉 [查看博客](/blog/)
-👉 [关于我](/about/)
+{{< cards >}}
+  {{< card link="docs" title="Docs" icon="book-open" >}}
+  {{< card link="about" title="About" icon="user" >}}
+{{< /cards >}}
+
+## Documentation
+
+For more information, visit [Hextra](https://imfing.github.io/hextra).
