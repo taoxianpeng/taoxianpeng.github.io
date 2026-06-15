@@ -34,15 +34,15 @@ jobs:
 
       - name: Build
         run: |
-          echo "=== HUGO VERSION ==="
           hugo version
-          echo "=== MOD GET ==="
-          hugo mod get 2>&1 || echo "mod get may have failed"
-          echo "=== BUILD ==="
-          hugo --minify 2>&1 || true
+          hugo mod clean
+          hugo mod get github.com/imfing/hextra@latest
+          hugo --minify 2>&1
+          echo "=== public dir ==="
+          ls -la public/ 2>/dev/null || echo "EMPTY!"
+          ls -la public/*.html 2>/dev/null || echo "NO HTML FILES!"
 
       - name: Upload artifact
-        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
