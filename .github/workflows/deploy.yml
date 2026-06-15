@@ -34,15 +34,18 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Debug
+      - name: Build and debug
         run: |
+          echo "=== Version ==="
           hugo version
+          echo "=== Theme ==="
           ls -la themes/
-          ls -la themes/hextra/ 2>/dev/null || echo "hextra theme missing!"
-          cat .gitmodules
-
-      - name: Build
-        run: hugo --minify 2>&1
+          ls themes/hextra/layouts/ 2>/dev/null | head -5
+          echo "=== Config ==="
+          cat hugo.toml
+          echo "=== Build ==="
+          hugo --minify 2>&1
+          echo "=== Done ==="
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
