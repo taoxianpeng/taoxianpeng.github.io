@@ -26,6 +26,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Debug
+        run: |
+          echo "=== files ==="
+          ls -la
+          ls -la themes/ 2>/dev/null || echo "no themes dir"
+          ls -la themes/hextra/ 2>/dev/null || echo "no hextra dir"
+          ls -la themes/hextra/layouts/ 2>/dev/null | head -3
+          cat hugo.toml | head -3
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
@@ -35,9 +44,19 @@ jobs:
       - name: Build
         run: |
           hugo version
-          hugo --minify 2>&1
+          hugo 2>&1 | tee /tmp/hugo_out.txt
+          echo "EXIT: $?"
+          ls -la public/ 2>/dev/null || echo "NO PUBLIC DIR"
+
+      - name: Show log
+        if: always()
+        run: |
+          cat /tmp/hugo_out.txt 2>/dev/null || echo "no log file"
+          ls -la public/ 2>/dev/null
+          find public/ -name "index.html" 2>/dev/null | head -5
 
       - name: Upload artifact
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
