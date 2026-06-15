@@ -32,20 +32,32 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
+      - name: Check files
+        run: |
+          echo "::notice::PWD: $(pwd)"
+          echo "::notice::Files at root:"
+          ls -la | head -20 | while read line; do echo "::notice::$line"; done
+          echo "::notice::hugo.toml exists: $(test -f hugo.toml && echo YES || echo NO)"
+          echo "::notice::hugo_minimal.toml exists: $(test -f hugo_minimal.toml && echo YES || echo NO)"
+          echo "::notice::themes exists: $(test -d themes && echo YES || echo NO)"
+          echo "::notice::themes/hextra exists: $(test -d themes/hextra && echo YES || echo NO)"
+          echo "::notice::content exists: $(test -d content && echo YES || echo NO)"
+
       - name: Build
         run: |
+          ls -la hugo*.toml
+          cat hugo_minimal.toml
           cp hugo_minimal.toml hugo.toml
+          echo "::notice::Will use: hugo.toml"
+          cat hugo.toml
+          echo "::notice::Building..."
           set +e
-          hugo --verbose 2>&1 | tee /tmp/hugo_out.txt
+          LS_OUTPUT=$(ls -la)
+          echo "::notice::$LS_OUTPUT"
+          hugo --verbose 2>&1 > /tmp/hugo_out.txt
           RC=$?
-          echo "::notice::Hugo exit code: $RC"
-          echo "::group::Last 30 lines"
-          tail -30 /tmp/hugo_out.txt
-          echo "::endgroup::"
-          # Output ALL lines as notices (limited to first 50)
-          head -50 /tmp/hugo_out.txt | while read line; do
-            echo "::notice::$line"
-          done
+          echo "::notice::Exit: $RC"
+          tail -20 /tmp/hugo_out.txt | while read line; do echo "::notice:::$line"; done
           exit $RC
 
       - name: Upload artifact
