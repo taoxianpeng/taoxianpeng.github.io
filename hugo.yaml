@@ -11,6 +11,12 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block: [['\[', '\]'], ["$$", "$$"]]
+          inline: [['$', '$']]
+        enable: true
 
   # enable hextra syntax highlight
   highlight:
@@ -18,21 +24,27 @@ markup:
 
 menu:
   main:
-    - name: Docs
-      pageRef: /docs
+    - name: 图形学
+      pageRef: /computer_graphic
       weight: 1
+    - name: 计算机基础
+      pageRef: /computer_base
+      weight: 2
+    - name: 其他
+      pageRef: /other
+      weight: 3
     - name: About
       pageRef: /about
-      weight: 2
+      weight: 4
     - name: Contact ↗
       url: "https://github.com/taoxianpeng"
-      weight: 3
+      weight: 5
     - name: Search
-      weight: 4
+      weight: 6
       params:
         type: search
     - name: GitHub
-      weight: 5
+      weight: 7
       url: "https://github.com/taoxianpeng"
       params:
         icon: github
