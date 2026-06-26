@@ -212,7 +212,7 @@ A_x & 0 & 0 & 0 \\
 0 & 0 & A_z & 0 \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
-, 既
+ = 
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & 0 \\ 
 0 & \frac{2}{r-b} & 0 & 0 \\ 
