@@ -182,15 +182,16 @@ A_x * r + B_x = 1
 $$
 求解出，$A_x=\frac{2}{r-l}$, $B_x=-\frac{r+l}{r-l}$
 
-跟上面同样的方法，计算出y,z方向的线性公式的系数：
+跟上面同样的方法，计算出y方向的线性公式的系数：
 $$
 A_y=\frac{2}{t-b}, B_y=-\frac{t+b}{t-b} \\
 A_z=\frac{2}{f-n}, B_z=-\frac{f+n}{f-n}
 $$
 
+
 变换矩阵一般由旋转，缩放，平移的形式组成。但对于目前的变换中没有旋转。可以分两种方式表示，第一种：旋转矩阵乘平移矩阵的到最终的变换矩阵。第二种是直接写变换矩阵。
 
-**第一种方法：**
+第一种：
 
 平移矩阵$T$在本章将的前部分已经给出：
 $$
@@ -204,6 +205,7 @@ T =
 $$
 
 旋转矩阵R由将前面线性计算的A部分组成
+
 $$
 R = 
 \begin{bmatrix} 
@@ -212,7 +214,7 @@ A_x & 0 & 0 & 0 \\
 0 & 0 & A_z & 0 \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
-=
+ = 
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & 0 \\ 
 0 & \frac{2}{r-b} & 0 & 0 \\ 
@@ -234,12 +236,12 @@ $$
 **第二种方法：**
 
 根据前面线性计算出来的$A_x, B_x, A_y, B_y, A_z, B_z$的内容直接带入到变换矩阵中：
-$$
+$
 \begin{bmatrix} 
 A & B \\ 
 0 & 1 
 \end{bmatrix}
-$$
+$
 
 也可以得到M矩阵：$
 \begin{bmatrix} 
@@ -250,7 +252,198 @@ $$
 \end{bmatrix}
 $
 
-### 投影视图
+
+### 透视视图
+
+透视的可视范围是一个四棱台形状，可使范围内的点都要被映射到近平面（透视棱台压扁成长方体）。先变换到正交视图下再判断，如果不在可视范围内的点都将被剔除掉。
+
+四棱台的范围为$[l,r] [t,b] [n,f]$，这个跟正交视图是一样的。
+
+计算投影矩阵，首先就要计算透视视图下的点转换成正交视图下的点的变换矩阵，既先从透视视图转正交视图，然后再从正交视图映射到近平面上。上面我们已经计算出了正交视图的变换矩阵。所以我们只要计算透视到正交的矩阵。
+
+$$
+P' = M_{ortho} * M_{persp->ortho}  * P_{persp}
+$$
+
+---
+
+近平面的点和远平面点上的z轴都是保持n, f不变的。x，y方向的要进行变换。
+
+利用相似三角形，得到x和y方向映射到正交视图下：
+$$
+\frac{x'}{n} = \frac{x}{z}\\
+x' = x * \frac{n}{z}
+$$
+同理，y方向也是：$y' = y * \frac{n}{z}$
+
+$$
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+1 \\
+\end{bmatrix}
+=
+M_{persp->ortho} * 
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1 \\
+\end{bmatrix} \\
+
+M_{perps->ortho}
+* 
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x * \frac{n}{z} \\
+y * \frac{n}{z} \\
+? \\
+1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-n*x \\
+-n*y \\
+? \\
+-z
+\end{bmatrix}
+$$
+
+所以，可以暂时得出矩阵 $M_{perps->ortho}$：
+$$
+\begin{bmatrix}
+-n & 0 & 0 & 0 \\
+0 & -n & 0 & 0 \\
+? & ? & ? & ? \\
+0 & 0 & -1 & 0 
+\end{bmatrix}
+$$
+
+将视锥体压扁(persp->ortho)时，第三行$[0,0,A,B]$需要求解.
+利用两个边界条件：
+
+1. 近平面(z=n, n<0): 透视除法之后 z值还是 n
+$$
+w_{clip} = -z = -n\\
+\frac{z_{clip}}{{w_{clip}}}=\frac{An+b}{-n}=n
+$$
+
+得到公式(1):$An+B=-n^2$
+
+2. 远平面(z=f, f<0)：透视除法之后 z值还是 f
+$$
+w_{clip} = -z = -f\\
+\frac{z_{clip}}{{w_{clip}}}=\frac{An+b}{-f}=f
+$$
+
+得到公式(1):$Af+B=-f^2$
+
+由(1)、(2)公式，求解出：$A=-(n+f), B=nf$
+
+然后带入到矩阵中，可得出完成矩阵:
+$$
+\begin{bmatrix}
+-n & 0 & 0 & 0 \\
+0 & -n & 0 & 0 \\
+0 & 0 & -(n+f) & nf \\
+0 & 0 & -1 & 0 
+\end{bmatrix}
+$$
+
+最终，透视投影的矩阵为：
+$$
+M = M_{ortho} * M_{perps->ortho}
+
+M = 
+\begin{bmatrix} 
+\frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\ 
+0 & \frac{2}{r-b} & 0 & -\frac{t+b}{t-b} \\ 
+0 & 0 & \frac{2}{f-n} & -\frac{f+n}{f-n} \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}
+*
+\begin{bmatrix}
+-n & 0 & 0 & 0 \\
+0 & -n & 0 & 0 \\
+0 & 0 & -(n+f) & nf \\
+0 & 0 & -1 & 0 
+\end{bmatrix} \\
+=
+\begin{bmatrix} 
+\frac{-2n}{r-l} & 0 & \frac{r+l}{r-l} & 0 \\ 
+0 & \frac{-2n}{t-b} & \frac{t+b}{t-b} & 0 \\ 
+0 & 0 & -\frac{n+f}{n-f} & \frac{2nf}{n-f} \\ 
+0 & 0 & -1 & 0 
+\end{bmatrix}
+$$
+
+- FOV的写法
+
+一般使用的适合不会直接写l,r,t,b,n,f。而是用FOV, aspect(宽高比)，所以再转换一层。
+
+$$
+tan\frac{FOV}{2} = \frac{height/2}{n} \\
+aspect = width/height
+$$
+
+这里的宽高指的是显示画面的宽高（近平面）
+
+$$
+height = t - b \\
+width = r - l \\
+n = -\frac{height}{2tan\frac{FOV}{2}} = - \frac{width}{aspect * 2tan\frac{FOV}{2}}
+$$
+
+注意： $n=near=z_{near} < 0$
+
+代入到M矩阵中：
+$$
+\frac{2n}{r-l} = -\frac{1}{aspect*tan\frac{FOV}{2}}
+$$
+
+$$
+\frac{2n}{t-b} = -\frac{1}{tan\frac{FOV}{2}}
+$$
+
+$$
+\begin{bmatrix}
+\frac{1}{aspect*tan\frac{FOV}{2}} & 0 & \frac{r+l}{r-l} & 0 \\ 
+0 & \frac{1}{tan\frac{FOV}{2}} & \frac{t+b}{t-b} & 0 \\ 
+0 & 0 & \frac{n+f}{n-f} & -\frac{2nf}{n-f} \\ 
+0 & 0 & -1 & 0 
+\end{bmatrix}
+$$
+
+如果 剪裁范围的左右，上下是对称的，那么
+
+$$
+\frac{r+l}{r-l} = 0 \\
+\frac{t+b}{t-b} = 0
+$$
+既，透视矩阵可简化为：
+$$
+\begin{bmatrix}
+\frac{1}{aspect*tan\frac{FOV}{2}} & 0 & 0 & 0 \\ 
+0 & \frac{1}{tan\frac{FOV}{2}} & 0 & 0 \\ 
+0 & 0 & \frac{n+f}{n-f} & -\frac{2nf}{n-f} \\ 
+0 & 0 & -1 & 0 
+\end{bmatrix}
+$$
+
 
 > Deepseek V4 Pro关于透视矩阵推导的理解
 
