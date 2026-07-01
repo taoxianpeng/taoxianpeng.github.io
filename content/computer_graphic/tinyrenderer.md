@@ -214,7 +214,7 @@ A_x & 0 & 0 & 0 \\
 0 & 0 & A_z & 0 \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
- = 
+= 
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & 0 \\ 
 0 & \frac{2}{r-b} & 0 & 0 \\ 
@@ -403,8 +403,8 @@ $$
 这里的宽高指的是显示画面的宽高（近平面）
 
 $$
-height = t - b \\
-width = r - l \\
+height = t - b \cr
+width = r - l \cr
 n = -\frac{height}{2tan\frac{FOV}{2}} = - \frac{width}{aspect * 2tan\frac{FOV}{2}}
 $$
 
