@@ -287,15 +287,13 @@ x' \\
 y' \\
 z' \\
 1 \\
-\end{bmatrix}
-&= M_{persp\to ortho} \cdot
+\end{bmatrix}= M_{persp\to ortho} \cdot
 \begin{bmatrix}
 x \\
 y \\
 z \\
 1 \\
 \end{bmatrix} \\[4pt]
-
 M_{persp\to ortho}
 \cdot
 \begin{bmatrix}
@@ -303,22 +301,19 @@ x \\
 y \\
 z \\
 1 \\
-\end{bmatrix}
-&=
+\end{bmatrix}=
 \begin{bmatrix}
 x' \\
 y' \\
 z' \\
 1 \\
-\end{bmatrix}
-=
+\end{bmatrix}=
 \begin{bmatrix}
 x \cdot \frac{n}{z} \\
 y \cdot \frac{n}{z} \\
 ? \\
 1 \\
-\end{bmatrix}
-=
+\end{bmatrix}=
 \begin{bmatrix}
 -nx \\
 -ny \\
@@ -375,9 +370,7 @@ $$
 
 最终，透视投影的矩阵为：
 $$
-\begin{aligned}
-M &= M_{ortho} \cdot M_{persp\to ortho} \\
-  &=
+M = M_{ortho} \cdot M_{persp\to ortho}=
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\ 
 0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\ 
@@ -390,15 +383,13 @@ M &= M_{ortho} \cdot M_{persp\to ortho} \\
 0 & -n & 0 & 0 \\
 0 & 0 & -(n+f) & nf \\
 0 & 0 & -1 & 0 
-\end{bmatrix} \\
-&=
+\end{bmatrix}=
 \begin{bmatrix} 
 \frac{-2n}{r-l} & 0 & \frac{r+l}{r-l} & 0 \\ 
 0 & \frac{-2n}{t-b} & \frac{t+b}{t-b} & 0 \\ 
 0 & 0 & -\frac{n+f}{n-f} & \frac{2nf}{n-f} \\ 
 0 & 0 & -1 & 0 
 \end{bmatrix}
-\end{aligned}
 $$
 
 - FOV的写法
