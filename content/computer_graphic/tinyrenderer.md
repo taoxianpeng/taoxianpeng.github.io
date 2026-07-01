@@ -176,16 +176,18 @@ $$
 直线公式为： $f(x) = Ax + B$, 我需要将x的范围压缩到[-1,1], 所以将(l, r)可以带入公式，列出方程：
 $$
 \begin{cases}
-A_x * l + B_x = -1 \\
-A_x * r + B_x = 1
+A_x \cdot l + B_x = -1 \\
+A_x \cdot r + B_x = 1
 \end{cases}
 $$
 求解出，$A_x=\frac{2}{r-l}$, $B_x=-\frac{r+l}{r-l}$
 
 跟上面同样的方法，计算出y方向的线性公式的系数：
 $$
-A_y=\frac{2}{t-b}, B_y=-\frac{t+b}{t-b} \\
-A_z=\frac{2}{f-n}, B_z=-\frac{f+n}{f-n}
+\begin{gathered}
+A_y=\frac{2}{t-b},\; B_y=-\frac{t+b}{t-b} \\
+A_z=\frac{2}{f-n},\; B_z=-\frac{f+n}{f-n}
+\end{gathered}
 $$
 
 
@@ -213,21 +215,20 @@ A_x & 0 & 0 & 0 \\
 0 & A_y & 0 & 0 \\ 
 0 & 0 & A_z & 0 \\ 
 0 & 0 & 0 & 1 
-\end{bmatrix}
-= 
+\end{bmatrix} =
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & 0 \\ 
-0 & \frac{2}{r-b} & 0 & 0 \\ 
+0 & \frac{2}{t-b} & 0 & 0 \\ 
 0 & 0 & \frac{2}{f-n} & 0 \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
-最终的变换矩阵 $M = R * T$， 得到：
+最终的变换矩阵 $M = R \cdot T$， 得到：
 $$
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\ 
-0 & \frac{2}{r-b} & 0 & -\frac{t+b}{t-b} \\ 
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\ 
 0 & 0 & \frac{2}{f-n} & -\frac{f+n}{f-n} \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
@@ -236,21 +237,22 @@ $$
 **第二种方法：**
 
 根据前面线性计算出来的$A_x, B_x, A_y, B_y, A_z, B_z$的内容直接带入到变换矩阵中：
-$
+$$
 \begin{bmatrix} 
 A & B \\ 
 0 & 1 
 \end{bmatrix}
-$
+$$
 
-也可以得到M矩阵：$
+也可以得到M矩阵：
+$$
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\ 
-0 & \frac{2}{r-b} & 0 & -\frac{t+b}{t-b} \\ 
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\ 
 0 & 0 & \frac{2}{f-n} & -\frac{f+n}{f-n} \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
-$
+$$
 
 
 ### 透视视图
@@ -262,7 +264,7 @@ $
 计算投影矩阵，首先就要计算透视视图下的点转换成正交视图下的点的变换矩阵，既先从透视视图转正交视图，然后再从正交视图映射到近平面上。上面我们已经计算出了正交视图的变换矩阵。所以我们只要计算透视到正交的矩阵。
 
 $$
-P' = M_{ortho} * M_{persp->ortho}  * P_{persp}
+P' = M_{ortho} \cdot M_{persp\to ortho} \cdot P_{persp}
 $$
 
 ---
@@ -271,12 +273,38 @@ $$
 
 利用相似三角形，得到x和y方向映射到正交视图下：
 $$
-\frac{x'}{n} = \frac{x}{z}\\
-x' = x * \frac{n}{z}
+\begin{aligned}
+\frac{x'}{n} &= \frac{x}{z} \\[2pt]
+x' &= x \cdot \frac{n}{z}
+\end{aligned}
 $$
-同理，y方向也是：$y' = y * \frac{n}{z}$
+同理，y方向也是：$y' = y \cdot \frac{n}{z}$
 
 $$
+\begin{aligned}
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+1 \\
+\end{bmatrix}
+&= M_{persp\to ortho} \cdot
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1 \\
+\end{bmatrix} \\[4pt]
+
+M_{persp\to ortho}
+\cdot
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1 \\
+\end{bmatrix}
+&=
 \begin{bmatrix}
 x' \\
 y' \\
@@ -284,46 +312,23 @@ z' \\
 1 \\
 \end{bmatrix}
 =
-M_{persp->ortho} * 
 \begin{bmatrix}
-x \\
-y \\
-z \\
-1 \\
-\end{bmatrix} \\
-
-M_{perps->ortho}
-* 
-\begin{bmatrix}
-x \\
-y \\
-z \\
-1 \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-x' \\
-y' \\
-z' \\
-1 \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-x * \frac{n}{z} \\
-y * \frac{n}{z} \\
+x \cdot \frac{n}{z} \\
+y \cdot \frac{n}{z} \\
 ? \\
 1 \\
 \end{bmatrix}
 =
 \begin{bmatrix}
--n*x \\
--n*y \\
+-nx \\
+-ny \\
 ? \\
 -z
 \end{bmatrix}
+\end{aligned}
 $$
 
-所以，可以暂时得出矩阵 $M_{perps->ortho}$：
+所以，可以暂时得出矩阵 $M_{persp\to ortho}$：
 $$
 \begin{bmatrix}
 -n & 0 & 0 & 0 \\
@@ -338,16 +343,20 @@ $$
 
 1. 近平面(z=n, n<0): 透视除法之后 z值还是 n
 $$
-w_{clip} = -z = -n\\
-\frac{z_{clip}}{{w_{clip}}}=\frac{An+b}{-n}=n
+\begin{aligned}
+w_{clip} &= -z = -n \\[2pt]
+\frac{z_{clip}}{w_{clip}} &= \frac{An+B}{-n}=n
+\end{aligned}
 $$
 
 得到公式(1):$An+B=-n^2$
 
 2. 远平面(z=f, f<0)：透视除法之后 z值还是 f
 $$
-w_{clip} = -z = -f\\
-\frac{z_{clip}}{{w_{clip}}}=\frac{An+b}{-f}=f
+\begin{aligned}
+w_{clip} &= -z = -f \\[2pt]
+\frac{z_{clip}}{w_{clip}} &= \frac{An+B}{-f}=f
+\end{aligned}
 $$
 
 得到公式(1):$Af+B=-f^2$
@@ -366,29 +375,30 @@ $$
 
 最终，透视投影的矩阵为：
 $$
-M = M_{ortho} * M_{perps->ortho}
-
-M = 
+\begin{aligned}
+M &= M_{ortho} \cdot M_{persp\to ortho} \\
+  &=
 \begin{bmatrix} 
 \frac{2}{r-l} & 0 & 0 & -\frac{r+l}{r-l} \\ 
-0 & \frac{2}{r-b} & 0 & -\frac{t+b}{t-b} \\ 
+0 & \frac{2}{t-b} & 0 & -\frac{t+b}{t-b} \\ 
 0 & 0 & \frac{2}{f-n} & -\frac{f+n}{f-n} \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}
-*
+\cdot
 \begin{bmatrix}
 -n & 0 & 0 & 0 \\
 0 & -n & 0 & 0 \\
 0 & 0 & -(n+f) & nf \\
 0 & 0 & -1 & 0 
 \end{bmatrix} \\
-=
+&=
 \begin{bmatrix} 
 \frac{-2n}{r-l} & 0 & \frac{r+l}{r-l} & 0 \\ 
 0 & \frac{-2n}{t-b} & \frac{t+b}{t-b} & 0 \\ 
 0 & 0 & -\frac{n+f}{n-f} & \frac{2nf}{n-f} \\ 
 0 & 0 & -1 & 0 
 \end{bmatrix}
+\end{aligned}
 $$
 
 - FOV的写法
@@ -396,33 +406,37 @@ $$
 一般使用的适合不会直接写l,r,t,b,n,f。而是用FOV, aspect(宽高比)，所以再转换一层。
 
 $$
-tan\frac{FOV}{2} = \frac{height/2}{n} \\
-aspect = width/height
+\begin{aligned}
+\tan\frac{FOV}{2} &= \frac{height/2}{n} \\[2pt]
+aspect &= \frac{width}{height}
+\end{aligned}
 $$
 
 这里的宽高指的是显示画面的宽高（近平面）
 
 $$
-height = t - b \\\\
-width = r - l \\\\
-n = -\frac{height}{2tan\frac{FOV}{2}} = - \frac{width}{aspect * 2tan\frac{FOV}{2}}
+\begin{aligned}
+height &= t - b \\[2pt]
+width &= r - l \\[2pt]
+n &= -\frac{height}{2\tan\frac{FOV}{2}} = - \frac{width}{aspect \cdot 2\tan\frac{FOV}{2}}
+\end{aligned}
 $$
 
 注意： $n=near=z_{near} < 0$
 
 代入到M矩阵中：
 $$
-\frac{2n}{r-l} = -\frac{1}{aspect*tan\frac{FOV}{2}}
+\frac{2n}{r-l} = -\frac{1}{aspect \cdot \tan\frac{FOV}{2}}
 $$
 
 $$
-\frac{2n}{t-b} = -\frac{1}{tan\frac{FOV}{2}}
+\frac{2n}{t-b} = -\frac{1}{\tan\frac{FOV}{2}}
 $$
 
 $$
 \begin{bmatrix}
-\frac{1}{aspect*tan\frac{FOV}{2}} & 0 & \frac{r+l}{r-l} & 0 \\ 
-0 & \frac{1}{tan\frac{FOV}{2}} & \frac{t+b}{t-b} & 0 \\ 
+\frac{1}{aspect \cdot \tan\frac{FOV}{2}} & 0 & \frac{r+l}{r-l} & 0 \\ 
+0 & \frac{1}{\tan\frac{FOV}{2}} & \frac{t+b}{t-b} & 0 \\ 
 0 & 0 & \frac{n+f}{n-f} & -\frac{2nf}{n-f} \\ 
 0 & 0 & -1 & 0 
 \end{bmatrix}
@@ -431,14 +445,16 @@ $$
 如果 剪裁范围的左右，上下是对称的，那么
 
 $$
-\frac{r+l}{r-l} = 0 \\
-\frac{t+b}{t-b} = 0
+\begin{aligned}
+\frac{r+l}{r-l} &= 0 \\[2pt]
+\frac{t+b}{t-b} &= 0
+\end{aligned}
 $$
 既，透视矩阵可简化为：
 $$
 \begin{bmatrix}
-\frac{1}{aspect*tan\frac{FOV}{2}} & 0 & 0 & 0 \\ 
-0 & \frac{1}{tan\frac{FOV}{2}} & 0 & 0 \\ 
+\frac{1}{aspect \cdot \tan\frac{FOV}{2}} & 0 & 0 & 0 \\ 
+0 & \frac{1}{\tan\frac{FOV}{2}} & 0 & 0 \\ 
 0 & 0 & \frac{n+f}{n-f} & -\frac{2nf}{n-f} \\ 
 0 & 0 & -1 & 0 
 \end{bmatrix}
