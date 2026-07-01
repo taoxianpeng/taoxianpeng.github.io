@@ -403,8 +403,8 @@ $$
 这里的宽高指的是显示画面的宽高（近平面）
 
 $$
-height = t - b \cr
-width = r - l \cr
+height = t - b \\\\
+width = r - l \\\\
 n = -\frac{height}{2tan\frac{FOV}{2}} = - \frac{width}{aspect * 2tan\frac{FOV}{2}}
 $$
 
