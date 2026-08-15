@@ -8,4 +8,4 @@ sidebar:
   open: true
 ---
 
-- [tinyopengl学习](tinyopengl) : 学习用C语言模拟OpenGL 1.0版本的API 
+- [tinyrenderer学习](tinyrenderer) : 几百行实现软光栅化器教程学习 

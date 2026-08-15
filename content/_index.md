@@ -1,17 +1,15 @@
 ---
-title: My Blog
+title: 
 toc: false
 ---
 
-This is the landing page.
+This is my space.
 
 ## Explore
 
 {{< cards >}}
-  {{< card link="docs" title="Docs" icon="book-open" >}}
-  {{< card link="about" title="About" icon="user" >}}
+  {{< card link="computer_graphic" title="图形学" icon="book-open" >}}
+  {{< card link="computer_base" title="计算机基础" icon="user" >}}
 {{< /cards >}}
 
-## Documentation
 
-For more information, visit [Hextra](https://imfing.github.io/hextra).
