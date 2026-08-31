@@ -7,9 +7,14 @@ This is my space.
 
 ## Explore
 
-{{< cards >}}
-  {{< card link="computer_graphic" title="图形学" icon="book-open" >}}
-  {{< card link="computer_base" title="计算机基础" icon="user" >}}
-{{< /cards >}}
+### [图形学](/computer_graphic/)
+
+- [tinyrenderer 学习](/computer_graphic/tinyrenderer/) — 几百行实现软光栅化器教程学习
+
+### [其他](/other/)
+
+- [Carla 仿真模拟](/other/carla仿真模拟/)
+- [esp32 入门](/other/esp32入门/)
+- [图灵完备游戏](/other/图灵完备游戏/)
 
 

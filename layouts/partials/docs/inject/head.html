@@ -1,0 +1,5 @@
+{{- /* 覆盖 hugo-book 空 partial：数学页面按需引入 KaTeX 样式（资源来自主题 static/katex） */ -}}
+{{- $noop := .WordCount -}}
+{{- if .Store.Get "hasMath" -}}
+<link rel="stylesheet" href="{{ "katex/katex.min.css" | relURL }}" />
+{{- end -}}

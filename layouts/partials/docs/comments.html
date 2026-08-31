@@ -1,0 +1,29 @@
+{{- /* 覆盖 hugo-book 默认 Disqus 评论：使用 Giscus（GitHub Discussions） */ -}}
+{{- $p := .Site.Params -}}
+{{- if and $p.BookGiscus (ne .Params.bookComments false) -}}
+{{- /* 若文章 front matter 设置了 bookGiscusId（Discussion 编号），则用 number 映射，
+       文件移动/改名/改标题都不会丢评论；否则用站点全局的 mapping（默认 pathname） */ -}}
+{{- $mapping := default "pathname" $p.BookGiscusMapping -}}
+{{- $term := "" -}}
+{{- with .Params.bookGiscusId -}}
+  {{- $mapping = "number" -}}
+  {{- $term = printf "%v" . -}}
+{{- end -}}
+<script src="https://giscus.app/client.js"
+        data-repo="{{ $p.BookGiscusRepo }}"
+        data-repo-id="{{ $p.BookGiscusRepoId }}"
+        data-category="{{ $p.BookGiscusCategory }}"
+        data-category-id="{{ $p.BookGiscusCategoryId }}"
+        data-mapping="{{ $mapping }}"
+        {{- with $term }} data-term="{{ . }}"{{ end }}
+        data-strict="0"
+        data-reactions-enabled="{{ default "1" $p.BookGiscusReactions }}"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="{{ default "zh-CN" $p.BookGiscusLang }}"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+{{- end -}}

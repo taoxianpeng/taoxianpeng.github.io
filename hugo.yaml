@@ -1,13 +1,16 @@
-baseURL: https://example.org/
+baseURL: https://taoxianpeng.github.io/
 locale: en-us
 title: Txp's Blog
 
+# 读取 git 信息，用于显示每页的"最后更新时间"
+enableGitInfo: true
+
 module:
   imports:
-    - path: github.com/imfing/hextra
+    - path: github.com/alex-shpak/hugo-book/v12
 
 markup:
-  # allow raw html
+  # allow raw html (hugo-book shortcodes 需要)
   goldmark:
     renderer:
       unsafe: true
@@ -18,51 +21,50 @@ markup:
           inline: [['$', '$']]
         enable: true
 
-  # enable hextra syntax highlight
+  tableOfContents:
+    startLevel: 1
+    endLevel: 4
+
   highlight:
     noClasses: false
 
 menu:
-  main:
-    - name: 图形学
-      pageRef: /computer_graphic
+  # 顶部导航左侧（侧边栏中的 section 列表由文件树自动生成，此处不再重复定义）
+  before:
+    - name: 首页
+      pageRef: /
       weight: 1
-    - name: 计算机基础
-      pageRef: /computer_base
-      weight: 2
-    - name: 其他
-      pageRef: /other
-      weight: 3
-    - name: About
-      pageRef: /about
-      weight: 4
-    - name: Contact ↗
-      url: "https://github.com/taoxianpeng"
-      weight: 5
-    - name: Search
-      weight: 6
-      params:
-        type: search
+  # 顶部导航右侧
+  after:
     - name: GitHub
-      weight: 7
       url: "https://github.com/taoxianpeng"
-      params:
-        icon: github
-    # - name: Twitter
-    #   weight: 6
-    #   url: "https://twitter.com/"
-    #   params:
-    #     icon: x-twitter
+      weight: 10
 
 params:
-  navbar:
-    displayTitle: true
-    displayLogo: false
+  # 主题配色: light / dark / auto (auto 跟随系统)
+  BookTheme: "auto"
+  # 显示右侧目录
+  BookToC: true
+  # 侧边栏为所有 section 渲染子页面菜单
+  BookSection: "*"
+  # 启用搜索
+  BookSearch: true
+  # 评论
+  BookComments: true
+  # 日期格式
+  BookDateFormat: "2006-01-02"
+  # 页脚 "编辑此页" 链接
+  BookRepo: "https://github.com/taoxianpeng/taoxianpeng.github.io"
+  BookEditLink: "https://github.com/taoxianpeng/taoxianpeng.github.io/edit/main/{{ .Path }}"
+  # 页脚 "最后更新时间"（来自 git 提交记录，需 enableGitInfo），点击跳转对应 commit
+  BookLastChangeLink: "https://github.com/taoxianpeng/taoxianpeng.github.io/commit/{{ .GitInfo.Hash }}"
 
-  footer:
-    displayCopyright: false
-    displayPoweredBy: true
-
-  editURL:
-    enable: true
-    base: "https://github.com/taoxianpeng/taoxianpeng.github.io/edit/main/content"
+  # Giscus 评论（基于 GitHub Discussions）
+  # 单篇文章禁用评论：在 front matter 加 bookComments: false
+  BookGiscus: true
+  BookGiscusRepo: "taoxianpeng/taoxianpeng.github.io"
+  BookGiscusRepoId: "R_kgDORlOOUQ"
+  BookGiscusCategory: "Announcements"
+  BookGiscusCategoryId: "DIC_kwDORlOOUc4DElSQ"
+  BookGiscusMapping: "pathname"
+  BookGiscusLang: "zh-CN"
