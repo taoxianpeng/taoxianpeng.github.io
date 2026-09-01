@@ -523,8 +523,11 @@ $$
     - 重新计算lookat矩阵，用灯光的方向向量去计算
     - 封装了设置通用的unform参数之类的函数
     - 还加了一个按键D 用来可视化获取的深度图
-3. vertex改造
-4. fragment改造
+3. uniform改造
+    - 增加灯光视图的矩阵，为了在vertex shader中将普通视角下的点转换到灯光视图中去
+    - 增加包含了深度图和深度图信息的结构体，传入给fragment shader去做计算
+4. vertex改造
+5. fragment改造
 
 
 ## 环境光遮蔽
