@@ -1,7 +1,6 @@
 ---
 title: "tinyrenderer"
 draft: false
-bookGiscusId: 1
 ---
 
 > tinyrenderer网站：https://haqr.eu/tinyrenderer/
