@@ -537,6 +537,50 @@ $$
 5. fragment改造
     - 接收到`light_world_pos`，对其做 (正交不做需要)透视矫正->NDC->转化到平面坐标->坐标采样深度纹理->偏置处理->深度对比
 
+---
+
+pass 1输出的深度图，距离越远颜色越黑，举例越近颜色越白:
+
+<img src="output_depth_render.png" width="60%">
+
+上图并非是直接拿渲染管线中计算的深度直接生成的图。由于深度的范围分布不均匀，直接拿原始深度数据生成会导致全黑的深度图。
+
+1. 首先是找出深度数据中实际的数据范围(不是f32::MAX, f32::MIN这种默认设定值)
+
+```rust
+let map = uniforms.depth_tex_raw.as_ref().unwrap();
+let mut scene_min = f32::MAX;
+let mut scene_max = f32::MIN;
+for d in map.data.iter().copied() {
+    if d < f32::MAX {
+        scene_min = scene_min.min(d);
+        scene_max = scene_max.max(d);
+    }
+}
+let range = scene_max - scene_min;
+```
+
+2. 按线性比例区分出深度。以深度为0为最白，深度为1为最黑，乘以255转化成颜色值。然后将颜色值都位移进32位的变量中（winit窗口显示数据要求32位）
+
+```rust
+depth_view.clear();
+for depth in map.data.iter().copied() {
+    let gray = if depth >= f32::MAX {
+        0.0f32 // 背景：没有几何写入过
+    } else if range > 1e-9 {
+        1.0 - (depth - scene_min) / range // 近 → 白，远 → 黑
+    } else {
+        1.0 // 场景深度单一，避免除零
+    };
+    let v = (gray * 255.0) as u8;
+    // 适配深度图显示到屏幕上进行类型转化
+    depth_view.push(((v as u32) << 16) | ((v as u32) << 8) | v as u32);
+}
+```
+
+最终的地板上带阴影效果图(人物模型上没有加这个阴影映射的shader所有没有, 好像光线方向也看不出来)：
+
+<img src="output_shadow_render.png" width="60%">
 
 ## 环境光遮蔽
 
