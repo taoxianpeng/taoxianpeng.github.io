@@ -1,7 +1,6 @@
 ---
 title: "Carla仿真模拟"
 draft: false
-bookGiscusId: 2
 ---
 
 # 简介

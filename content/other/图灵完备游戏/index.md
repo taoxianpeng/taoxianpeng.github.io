@@ -1,6 +1,5 @@
 ---
 title: "图灵完备游戏"
-bookGiscusId: 4
 ---
 
 ## 与或门

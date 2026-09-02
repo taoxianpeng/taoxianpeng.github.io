@@ -1,7 +1,6 @@
 ---
 title: "esp32入门"
 draft: false
-bookGiscusId: 3
 ---
 
 # Arduino 基础
