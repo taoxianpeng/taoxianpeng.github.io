@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 800 1200" role="img" aria-labelledby="bfc-title bfc-desc">
+  <title id="bfc-title">Bresenham 直线绘制算法流程图</title>
+  <desc id="bfc-desc">自上而下的经典流程图：输入端点并初始化 dx、dy 与步长方向，经 dy&gt;dx 归一化判断（交换主轴、steep 标志）后进入主循环；循环内先绘制当前像素，再判断 i==dx 是否结束，否则由决策变量 p&gt;0 决定副轴是否进给并递推 p，主轴每步恒定进给，最后经左侧回线返回绘制节点。全程仅整数加减与乘 2，无除法、无浮点。</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Sans+SC:wght@400;500;600&amp;display=swap');
+      .name { font-family: 'Geist', 'Noto Sans SC', sans-serif; font-weight: 600; fill: #2D3142; }
+      .mutedtxt { font-family: 'Geist', 'Noto Sans SC', sans-serif; font-weight: 500; fill: #4F5D75; }
+      .formula { font-family: 'Geist Mono', 'Noto Sans SC', monospace; fill: #2D3142; }
+      .mono-muted { font-family: 'Geist Mono', 'Noto Sans SC', monospace; fill: #4F5D75; }
+      .blabel { font-family: 'Geist Mono', 'Noto Sans SC', monospace; font-size: 9px; fill: #7A8399; letter-spacing: 0.08em; }
+      .legendtxt { font-family: 'Geist', 'Noto Sans SC', sans-serif; font-weight: 500; font-size: 9px; fill: #4F5D75; }
+      .eyebrow { font-family: 'Geist Mono', monospace; font-size: 8px; fill: #7A8399; letter-spacing: 0.14em; }
+      .caption { font-family: 'Geist', 'Noto Sans SC', sans-serif; font-weight: 600; font-size: 16px; fill: #2D3142; }
+      .footnote { font-family: 'Geist Mono', 'Noto Sans SC', monospace; font-size: 10px; fill: #7A8399; }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 8 3, 0 6" fill="#4F5D75"/>
+    </marker>
+  </defs>
+
+  <!-- page background -->
+  <rect width="800" height="1200" fill="#FFFFFF"/>
+
+  <!-- ========== connectors (drawn before nodes) ========== -->
+  <g stroke="#4F5D75" stroke-width="1.2" fill="none">
+    <path d="M400 104 V160" marker-end="url(#arrow)"/>
+    <path d="M400 212 V268" marker-end="url(#arrow)"/>
+    <path d="M400 324 V380" marker-end="url(#arrow)"/>
+    <path d="M500 412 H624 A8 8 0 0 1 632 420 V448" marker-end="url(#arrow)"/>
+    <path d="M400 444 V500" marker-end="url(#arrow)"/>
+    <path d="M632 500 V516 A8 8 0 0 1 624 524 H540" marker-end="url(#arrow)"/>
+    <path d="M400 548 V604" marker-end="url(#arrow)"/>
+    <path d="M400 660 V716" marker-end="url(#arrow)"/>
+    <path d="M510 748 H624 A8 8 0 0 1 632 756 V788" marker-end="url(#arrow)"/>
+    <path d="M400 780 V836" marker-end="url(#arrow)"/>
+    <path d="M510 868 H624 A8 8 0 0 1 632 876 V920" marker-end="url(#arrow)"/>
+    <path d="M290 868 H228 A8 8 0 0 0 220 876 V920" marker-end="url(#arrow)"/>
+    <path d="M632 976 V1032 A8 8 0 0 1 624 1040 H540" marker-end="url(#arrow)"/>
+    <path d="M220 968 V1032 A8 8 0 0 0 228 1040 H260" marker-end="url(#arrow)"/>
+    <path d="M400 1068 V1100 A8 8 0 0 1 392 1108 H88 A8 8 0 0 1 80 1100 V640 A8 8 0 0 1 88 632 H268" marker-end="url(#arrow)"/>
+    <!-- C1 -> N9 dashed guide, no arrowhead -->
+    <path d="M276 812 H344 V851" stroke="rgba(45,49,66,0.45)" stroke-width="1" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- ========== branch labels (opaque masks, >=6px off their stroke) ========== -->
+  <g>
+    <rect x="548" y="392" width="24" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="560" y="401" text-anchor="middle">是</text>
+
+    <rect x="364" y="460" width="20" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="374" y="469" text-anchor="middle">否</text>
+
+    <rect x="558" y="728" width="24" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="570" y="737" text-anchor="middle">是</text>
+
+    <rect x="364" y="800" width="20" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="374" y="809" text-anchor="middle">否</text>
+
+    <rect x="558" y="850" width="24" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="570" y="859" text-anchor="middle">是</text>
+
+    <rect x="243" y="850" width="24" height="12" fill="#FFFFFF"/>
+    <text class="blabel" x="255" y="859" text-anchor="middle">否</text>
+  </g>
+
+  <!-- ========== nodes ========== -->
+  <g stroke="#2D3142" stroke-width="1" fill="#FFFFFF">
+    <!-- N1 开始 -->
+    <rect x="320" y="56" width="160" height="48" rx="24"/>
+    <!-- N2 输入端点 -->
+    <polygon points="276,160 540,160 524,212 260,212"/>
+    <!-- N3 初始化 -->
+    <rect x="260" y="268" width="280" height="56" rx="6"/>
+    <!-- N4 dy > dx ? -->
+    <polygon points="400,380 500,412 400,444 300,412"/>
+    <!-- N5 swap -->
+    <rect x="512" y="448" width="240" height="52" rx="6"/>
+    <!-- N6 p, i init -->
+    <rect x="260" y="500" width="280" height="48" rx="6"/>
+    <!-- N8 i == dx ? -->
+    <polygon points="400,716 510,748 400,780 290,748"/>
+    <!-- N10 副轴进给 -->
+    <rect x="512" y="920" width="240" height="56" rx="6"/>
+    <!-- N11 副轴不进给 -->
+    <rect x="120" y="920" width="200" height="48" rx="6"/>
+    <!-- N12 主轴进给 -->
+    <rect x="260" y="1012" width="280" height="56" rx="6"/>
+    <!-- N13 结束 -->
+    <rect x="572" y="788" width="120" height="48" rx="24"/>
+  </g>
+
+  <!-- highlighted focal nodes: N7 绘制像素, N9 p > 0 ? -->
+  <polygon points="276,604 540,604 524,660 260,660" fill="rgba(235,108,54,0.10)" stroke="#EB6C36" stroke-width="1.2"/>
+  <polygon points="400,836 510,868 400,900 290,868" fill="rgba(235,108,54,0.10)" stroke="#EB6C36" stroke-width="1.2"/>
+
+  <!-- loop-entry badge chip inside N7 -->
+  <rect x="284" y="612" width="28" height="14" rx="2" fill="rgba(235,108,54,0.10)" stroke="#EB6C36" stroke-width="0.8"/>
+  <text class="blabel" x="298" y="622" text-anchor="middle" fill="#EB6C36">循环</text>
+
+  <!-- C1 虚线旁注框 -->
+  <rect x="100" y="700" width="176" height="136" rx="4" fill="#FFFFFF" stroke="rgba(45,49,66,0.55)" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- ========== node text ========== -->
+  <g text-anchor="middle">
+    <text class="name" x="400" y="85" font-size="14">开始</text>
+
+    <text x="400" y="191" font-size="14"><tspan class="name">输入端点 </tspan><tspan class="formula">(x₀,y₀)、(x₁,y₁)</tspan></text>
+
+    <text class="formula" x="400" y="292" font-size="12">dx = |x₁−x₀|,  dy = |y₁−y₀|</text>
+    <text class="formula" x="400" y="310" font-size="12">sx = ±1,  sy = ±1</text>
+
+    <text class="formula" x="400" y="416" font-size="12">dy &gt; dx ?</text>
+
+    <text x="632" y="470" font-size="12"><tspan class="name">交换 dx 与 dy，</tspan><tspan class="formula">steep = 1</tspan></text>
+    <text class="mutedtxt" x="632" y="488" font-size="11">（主轴改为 y）</text>
+
+    <text class="formula" x="400" y="528" font-size="12">p = 2·dy − dx ,  i = 0</text>
+
+    <text x="400" y="637" font-size="14"><tspan class="name">绘制像素 </tspan><tspan class="formula">(x, y)</tspan></text>
+
+    <text class="formula" x="400" y="752" font-size="12">i == dx ?</text>
+
+    <text class="formula" x="400" y="872" font-size="13" font-weight="600">p &gt; 0 ?</text>
+
+    <text x="632" y="944" font-size="12"><tspan class="name">副轴进给：</tspan><tspan class="formula">steep ? x+=sx : y+=sy</tspan></text>
+    <text class="formula" x="632" y="962" font-size="12">p = p + 2·(dy − dx)</text>
+
+    <text class="name" x="220" y="940" font-size="13">副轴不进给</text>
+    <text class="formula" x="220" y="958" font-size="12">p = p + 2·dy</text>
+
+    <text x="400" y="1036" font-size="12"><tspan class="name">主轴进给：</tspan><tspan class="formula">steep ? y+=sy : x+=sx</tspan></text>
+    <text class="formula" x="400" y="1054" font-size="12">i = i + 1</text>
+
+    <text class="name" x="632" y="817" font-size="14">结束</text>
+  </g>
+
+  <!-- C1 text (left-aligned inside note box) -->
+  <g text-anchor="start">
+    <text class="name" x="112" y="728" font-size="12">公式注释</text>
+    <text class="mono-muted" x="112" y="756" font-size="11">p = dx·(d₁ − d₂)</text>
+    <text x="112" y="778" font-size="11"><tspan class="mono-muted">p &gt; 0 ⟺ </tspan><tspan class="mutedtxt">直线更靠上像素</tspan></text>
+    <text x="112" y="800" font-size="11"><tspan class="mutedtxt">递推：仅整数加减与 </tspan><tspan class="mono-muted">×2</tspan></text>
+  </g>
+
+  <!-- ========== legend strip ========== -->
+  <g>
+    <text class="eyebrow" x="80" y="1126">LEGEND</text>
+    <g stroke="#2D3142" stroke-width="0.8" fill="#FFFFFF">
+      <rect x="80" y="1138" width="28" height="14" rx="7"/>
+      <polygon points="186,1138 208,1138 202,1152 180,1152"/>
+      <rect x="280" y="1138" width="28" height="14" rx="2"/>
+      <polygon points="394,1138 408,1145 394,1152 380,1145"/>
+      <rect x="480" y="1138" width="28" height="14" rx="2" stroke-dasharray="4 3" stroke="rgba(45,49,66,0.55)"/>
+    </g>
+    <text class="legendtxt" x="114" y="1149">起止</text>
+    <text class="legendtxt" x="214" y="1149">输入/输出</text>
+    <text class="legendtxt" x="314" y="1149">处理</text>
+    <text class="legendtxt" x="414" y="1149">判定</text>
+    <text class="legendtxt" x="514" y="1149">旁注</text>
+  </g>
+
+  <!-- ========== caption + footer ========== -->
+  <text class="caption" x="760" y="1124" text-anchor="end">Bresenham 直线算法流程</text>
+  <text class="footnote" x="760" y="1148" text-anchor="end">全程无除法、无浮点、无取整</text>
+</svg>
