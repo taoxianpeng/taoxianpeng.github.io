@@ -1,5 +1,5 @@
 ---
-title: "Learn Vulkan"
+title: "LearnVulkan"
 ---
 
 # LearnVulkan
