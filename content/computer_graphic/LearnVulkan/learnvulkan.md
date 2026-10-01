@@ -8,7 +8,7 @@ title: "Learn Vulkan"
 
 ## Hello World - 绘制一个三角形
 
-<img src="vulkan_triangle_flowchart.svg">
+![vulkan渲染流程](./vulkan_triangle_flowchart.svg)
 
 ### 创建VkIntance
 
